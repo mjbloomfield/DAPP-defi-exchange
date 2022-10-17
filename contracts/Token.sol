@@ -47,7 +47,7 @@ contract Token {
 
 			require(balanceOf[msg.sender] >= _value);
 
-			_transfer(msg.sender, -to, _value);
+			_transfer(msg.sender, _to, _value);
 
 			return true;
 		}
@@ -77,12 +77,25 @@ contract Token {
 		 return true;
 	}
 
-	function transferFrom(address _from, address _to, uint256 _value
-		) public
-	returns(bool success)
+	function transferFrom(
+		address _from,
+		address _to,
+		uint256 _value
+	) 
+		public
+		returns(bool success)
 	{
+	require(_value <= balanceOf[_from]);
+	require(_value <= allowance[_from][msg.sender]);
+//Reset Allowance
+	allowance[_from][msg.sender] = allowance[_from][msg.sender] - _value;
 
 
+//spend tokens
+	_transfer(_from, _to, _value);
+
+
+	return true;
 	}	
 
 
