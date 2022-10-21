@@ -1,5 +1,6 @@
 const { expect } = require('chai');
 const { ethers } = require('hardhat');
+const { legacy_createStore } = require('redux');
 
 const tokens = (n) => {
   return ethers.utils.parseUnits(n.toString(), 'ether')
@@ -15,6 +16,7 @@ describe('Exchange', () => {
     const Token = await ethers.getContractFactory('Token')
 
     token1 = await Token.deploy('Dapp University', 'DAPP', '1000000')
+    token2 = await Token.deploy('Mock Dai', 'mDAi', '1000000')
 
     accounts = await ethers.getSigners()
     deployer = accounts[0]
@@ -158,7 +160,36 @@ describe('Exchange', () => {
 
   })
 
+  describe('Making Orders', async () => {
+    
+    let transaction, result
+    describe('Success', async () => {
+      beforeEach(async () => {
+        // Deposit tokens before making order
 
+        // Approve Token
+        transaction = await token1.connect(user1).approve(exchange.address, amount)
+        result = await transaction.wait()
 
+        // Deposit token
+        transaction = await exchange.connect(user1).depositToken(token1.address, amount)
+        result = await transaction.wait()
+
+        //make order
+        transaction = await exchange.connect(user1).makeorder(token2.address, tokens(1), token1.address, tokens(1))
+      
+      })
+
+      it('Tracks newly created order', async () => {
+          expect(await exchange.orderCount()).to.equal(1)
+
+      })
+  
+    })
+  
+    describe('Failure', async () => {
+
+    })
+  })
 
 })
