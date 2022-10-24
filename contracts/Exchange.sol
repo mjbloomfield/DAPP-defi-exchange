@@ -12,6 +12,7 @@ contract Exchange {
     //orders mapping
     mapping(uint256 => _Order) public orders;
     uint256 public orderCount;
+    mapping(uint256 = > bool) public orderCancelled; //true or false
 
     event Deposit(
         address token, 
@@ -132,6 +133,12 @@ function makeOrder(
         block.timestamp
     );
     
+    }
+    function cancelOrder(uint256 _id) public {
+        //Fetch Order
+        _Order storage _order = _orders[_id]; 
+        // Cancel Order
+        orderCancelled[_id] = true   
     }
 
 }
