@@ -11,18 +11,38 @@ contract Exchange {
     mapping(address => mapping(address => uint256)) public tokens;
     //orders mapping
     mapping(uint256 => _Order) public orders;
+    uint256 public orderCount;
 
-    event Deposit(address token, address user, uint256 amount, uint256 balance);
-    event Withdraw(address token, address user, uint256 amount, uint256 balance);
+    event Deposit(
+        address token, 
+        address user, 
+        uint256 amount, 
+        uint256 balance
+    );
+    event Withdraw(
+        address token,
+        address user,
+        uint256 amount, 
+        uint256 balance
+    );
+    event Order(
+         uint256 id,
+        address user,
+        address tokenGet,
+        uint256 amountGet,
+        address tokenGive,
+        uint256 amountGive,
+        uint256 timestamp
+    );
 
     //way to model the order
     struct _Order {
-        uint256 id; //unique identifier for oreder
+        uint256 id; //unique identifier for order
         address user;//User who made order
         address tokenGet; //address of the token they receive
         uint256 amountGet; //Amount received
         address tokenGive; //address of the token they give
-        address amountGive; //amount given
+        uint256 amountGive; //amount given
         uint256 timestamp; //when order was created
 
     } 
@@ -79,25 +99,39 @@ function makeOrder(
     address _tokenGet,
     uint256 _amountGet,
     address _tokenGive,
-    address _amountGive) 
-    public {
+    uint256 _amountGive
+    ) public {
 
     // Token Give (the token they want to spend) - which token,  and how much?
     
     //Token Get (the token they want to receive) - which token, and how much?
-    orderCount = orderCount +1;
+   //Require token balance
+    require(balanceOf(_tokenGive, msg.sender) >= _amountGive);
+
+   //Instantiate Order
+    orderCount = orderCount + 1;
     
      orders[orderCount] = _Order(
         orderCount, //id
         msg.sender, //user
-        _tokenGet
-        _amountGet
-        _tokenGive
-        _amountGive
-        block.timestamp //timestamp of black in epoch time
+        _tokenGet,
+        _amountGet,
+        _tokenGive,
+        _amountGive,
+        block.timestamp //timestamp of bl0ck in epoch time
      );
-    }
-)
 
+     //Emit Event
+    emit Order(
+        orderCount,
+        msg.sender,
+        _tokenGet,
+        _amountGet,
+        _tokenGive,
+        _amountGive,
+        block.timestamp
+    );
+    
+    }
 
 }
