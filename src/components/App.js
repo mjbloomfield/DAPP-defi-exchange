@@ -11,7 +11,6 @@ import { loadProvider,
        } from '../store/interactions';
 
 
-
 function App() {
 
     const dispatch = useDispatch()
