@@ -1,6 +1,6 @@
 
 import { useEffect } from 'react';
-import { useDispatch } from 'react-redux'
+import { useDispatch } from 'react-redux';
 import config from '../config.json';
 import { loadProvider,
         loadNetwork,
@@ -9,6 +9,8 @@ import { loadProvider,
         loadExchange
 
        } from '../store/interactions';
+
+import Navbar from './Navbar'
 
 
 function App() {
@@ -22,11 +24,17 @@ function App() {
 
       //Fetch current nework's chainId (e.g. hardhat: 31337, kovan: 42)
       const chainId = await loadNetwork(provider, dispatch)
+      console.log( 'The app.js chainId is', chainId)
 
-      //Fetch current account & balance from Metamask
-      const account = await loadAccount(provider, dispatch)
-      console.log('account address = ' + account)
-          
+      // Reload page when network changes
+    window.ethereum.on('chainChanged', () => {
+      window.location.reload()
+    })
+      //Fetch current account & balance from Metamask when changed
+      window.ethereum.on('accountsChanged', () => {
+        loadAccount(provider, dispatch)
+      })
+            
       // Load Token Smart Contract
       const Dapp = config[chainId].Dapp
       const mETH = config[chainId].mETH
@@ -45,7 +53,7 @@ function App() {
   return (
     <div>
 
-      {/* Navbar */}
+      <Navbar />
 
       <main className='exchange grid'>
         <section className='exchange__section--left grid'>
