@@ -24,10 +24,10 @@ const Navbar = () => {
             method: 'wallet_switchEthereumChain',
             params: [{ chainId: e.target.value }],
         })
+        //checking when networkHandler runs
         console.log('e.target value is ',e.target.value, " chainId is " + chainId)
         console.log(`0x${chainId.toString(16)}`)
-        //selecting from the network dropdown triggers network handler, but doesn't switch networks
-        //only switches networks if disconnect and reconnect.
+        
     }
     return(
       <div className='exchange__header grid'>
@@ -59,7 +59,7 @@ const Navbar = () => {
            
             {account ? (
             <a 
-                href={config[chainId] ? `${config[chainId].explorerURL}/address/${account}` : `#`}
+            href={config[chainId] ? `${config[chainId].explorerURL}/address/${account}` : `#`}
                 target='_blank'
                 rel='noreferrer'
             >

@@ -11,7 +11,7 @@ import { loadProvider,
        } from '../store/interactions';
 
 import Navbar from './Navbar'
-
+import Markets from './Markets'
 
 function App() {
 
@@ -38,7 +38,8 @@ function App() {
       // Load Token Smart Contract
       const Dapp = config[chainId].Dapp
       const mETH = config[chainId].mETH
-      await loadTokens(provider, [Dapp.address, mETH.address], dispatch)
+      const mDAI = config[chainId].mDAI
+      await loadTokens(provider, [Dapp.address, mETH.address, mDAI.address], dispatch)
       
     // Load exchange contract
       const exchangeConfig = config[chainId].exchange
@@ -59,7 +60,7 @@ function App() {
         <section className='exchange__section--left grid'>
 
           {/* Markets */}
-
+      <Markets />
           {/* Balance */}
 
           {/* Order */}
